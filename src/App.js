@@ -1,16 +1,19 @@
 import React, {useEffect, useRef, useState} from 'react';
 import './App.css';
+import {useDispatch, useSelector} from "react-redux";
+import {addNote, deleteNote, updateNote} from "./redux/to-do/actions";
 
 
 export function App() {
-  const savedNotes = JSON.parse(localStorage.getItem("localNotes"));
-  const [notes, setNotes] = useState(savedNotes || []);
   const inputRef = useRef();
 
-  useEffect(() => {
-    console.log('effect')
-    localStorage.setItem("localNotes", JSON.stringify(notes));
-  }, [notes])
+  const notes = useSelector((state) => state.toDo.all);
+  const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   console.log('effect')
+  //   localStorage.setItem("localNotes", JSON.stringify(notes));
+  // }, [notes])
 
   function onSubmit(event) {
     event.preventDefault();
@@ -22,23 +25,9 @@ export function App() {
       checked: false,
       id: Date.now()
     }
-    setNotes(notes.concat(noteObj));
+
+    dispatch(addNote(noteObj));
     inputRef.current.value = '';
-  }
-
-
-  function deleteNote(id) {
-    const notesClone = notes.slice(0);
-    let indexItem = notesClone.findIndex(note => note.id === id);
-    notesClone.splice(indexItem, 1);
-    setNotes(notesClone);
-  }
-
-  function toBeChecked(id) {
-    const notesClone = notes.slice(0);
-    let indexItem = notesClone.findIndex(note => note.id === id);
-    notesClone[indexItem].checked = !notes[indexItem].checked;
-    setNotes(notesClone);
   }
 
   return (
@@ -51,9 +40,12 @@ export function App() {
       <div className="notes">
         {notes.map(note => (
             <div className="note" key={note.id}>
-                  <input className="checkbox" type="checkbox" checked={note.checked} onClick={() => toBeChecked(note.id)}/>
+                  <input className="checkbox"
+                         type="checkbox"
+                         checked={note.checked}
+                         onClick={() => {dispatch(updateNote({...note, checked: !note.checked}))}}/>
                   <span className="span">{note.text}</span>
-                  <img onClick={() => deleteNote(note.id)} className="icon_delete" src="https://cdn.pixabay.com/photo/2016/03/31/18/31/cancel-1294426_640.png" alt=''/>
+                  <img onClick={() => dispatch(deleteNote(note.id))} className="icon_delete" src="https://cdn.pixabay.com/photo/2016/03/31/18/31/cancel-1294426_640.png" alt=''/>
             </div>
           ))
         }
