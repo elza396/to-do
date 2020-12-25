@@ -1,0 +1,18 @@
+.icon_delete {
+    height: 30px;
+    width: 30px;
+    margin-left: 10px;
+}
+.note {
+    border: 1px solid;
+    margin: 30px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 366px;
+    padding: 0 10px;
+    min-height: 50px;
+}
+.checkbox {
+    margin-right: 10px;
+}
